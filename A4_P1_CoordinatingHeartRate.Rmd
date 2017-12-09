@@ -566,7 +566,7 @@ lapply(prep_files,shuffle)
 #make list of shuffled files
 shuffled_list = list.files("ShuffledData", full.names = T)
 
-final_results_shuffled = data.frame()
+final_results_shuffled = data.frame(NULL)
 n=1
 for (f in shuffled_list) {
   dat = read.csv(file=f,header = T)
@@ -591,15 +591,76 @@ write.csv(final_results_shuffled,"final_results_shuffled.csv",row.names=F)
 final_results$type = factor("normal")
 final_results_shuffled$type = factor("shuffle")
 
-
-
-
 #merge them into one df
+
 normal_shuffled = rbind(final_results,final_results_shuffled)
 
+#shuffled data got a lot of nas for some reason, so I'll use dominik's data instead
+final_results<-NULL
+final_results_shuffled<-NULL
+final_results_surrogate<-NULL
+
+final_results<- read.csv2("final_results.csv", sep = ",", header = TRUE)
+final_results_shuffled<-read.csv2("final_results_shuffled.csv", sep = ",", header = TRUE)
+final_results_surrogate<-read.csv2("final_results_surrogate.csv", sep = ",", header = TRUE)
+
+final_results$type = factor("normal")
+final_results_shuffled$type = factor("shuffle")
+final_results_surrogate$type = factor("surrogate")
+normal_shuffled = rbind(final_results,final_results_shuffled, final_results_surrogate)
+
+normal_shuffled$delay<-as.numeric(normal_shuffled$delay)
+normal_shuffled$embed<-as.numeric(normal_shuffled$embed)
+normal_shuffled$radius<-as.numeric(normal_shuffled$radius)
+normal_shuffled$RR_HR<-as.numeric(normal_shuffled$RR_HR)
+normal_shuffled$DET_HR<-as.numeric(normal_shuffled$DET_HR)
+normal_shuffled$maxL_HR<-as.numeric(normal_shuffled$maxL_HR)
+normal_shuffled$L_HR<-as.numeric(normal_shuffled$L_HR)
+normal_shuffled$ENTR_HR<-as.numeric(normal_shuffled$ENTR_HR)
+normal_shuffled$LAM_HR<-as.numeric(normal_shuffled$LAM_HR)
+normal_shuffled$TT_HR<-as.numeric(normal_shuffled$TT_HR)
+
+normal_shuffled$delay.1<-as.numeric(normal_shuffled$delay.1)
+normal_shuffled$embed.1<-as.numeric(normal_shuffled$embed.1)
+normal_shuffled$radius.1<-as.numeric(normal_shuffled$radius.1)
+normal_shuffled$RR_Resp<-as.numeric(normal_shuffled$RR_Resp)
+normal_shuffled$DET_Resp<-as.numeric(normal_shuffled$DET_Resp)
+normal_shuffled$maxL_Resp<-as.numeric(normal_shuffled$maxL_Resp)
+normal_shuffled$L_Resp<-as.numeric(normal_shuffled$L_Resp)
+normal_shuffled$ENTR_Resp<-as.numeric(normal_shuffled$ENTR_Resp)
+normal_shuffled$LAM_Resp<-as.numeric(normal_shuffled$LAM_Resp)
+normal_shuffled$TT_Resp<-as.numeric(normal_shuffled$TT_Resp) 
+
+#seems odd, let\s try data from maris
+data<-read.csv2("Final_dataset_maris.csv", sep = ",", header = TRUE)
+
+
+data$Resp_RR<-as.numeric(data$Resp_RR)
+data$HR_RR<-as.numeric(data$HR_RR)
+normal_shuffled$embed<-as.numeric(normal_shuffled$embed)
+normal_shuffled$radius<-as.numeric(normal_shuffled$radius)
+normal_shuffled$RR_HR<-as.numeric(normal_shuffled$RR_HR)
+normal_shuffled$DET_HR<-as.numeric(normal_shuffled$DET_HR)
+normal_shuffled$maxL_HR<-as.numeric(normal_shuffled$maxL_HR)
+normal_shuffled$L_HR<-as.numeric(normal_shuffled$L_HR)
+normal_shuffled$ENTR_HR<-as.numeric(normal_shuffled$ENTR_HR)
+normal_shuffled$LAM_HR<-as.numeric(normal_shuffled$LAM_HR)
+normal_shuffled$TT_HR<-as.numeric(normal_shuffled$TT_HR)
+
+normal_shuffled$delay.1<-as.numeric(normal_shuffled$delay.1)
+normal_shuffled$embed.1<-as.numeric(normal_shuffled$embed.1)
+normal_shuffled$radius.1<-as.numeric(normal_shuffled$radius.1)
+normal_shuffled$RR_Resp<-as.numeric(normal_shuffled$RR_Resp)
+normal_shuffled$DET_Resp<-as.numeric(normal_shuffled$DET_Resp)
+normal_shuffled$maxL_Resp<-as.numeric(normal_shuffled$maxL_Resp)
+normal_shuffled$L_Resp<-as.numeric(normal_shuffled$L_Resp)
+normal_shuffled$ENTR_Resp<-as.numeric(normal_shuffled$ENTR_Resp)
+normal_shuffled$LAM_Resp<-as.numeric(normal_shuffled$LAM_Resp)
+normal_shuffled$TT_Resp<-as.numeric(normal_shuffled$TT_Resp)
+
 library(lmerTest)
-RR_HR_shuf = lmer(RR_HR ~ type + (1|group),normal_shuffled)
-summary(RR_HR_shuf) #not significant
+HR_RR = lmer(RR_HR ~ type + (1|group),normal_shuffled)
+summary(HR_RR) #significant
 
 DET_HR_shuf = lmer(DET_HR ~ type+(1|group),normal_shuffled)
 summary(DET_HR_shuf) #significant
