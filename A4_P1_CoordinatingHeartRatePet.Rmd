@@ -503,10 +503,27 @@ summary(Resp_TT)
 
 ```{r}
 #####CONDITIONS
+d$Condition<-relevel(d$Condition,ref = "Synchronous")
 
-lmer(HR_RR ~ Condition_l*typepairs + (1|))
-#If do interaction, will take away the stuff from doing the same activity
-HR_RR ~ Condition*Type
+HR_RR_cond<- lmer(HR_RR ~ Condition+ (1|Group), d)
+summary(HR_RR_cond)
+difflsmeans(HR_RR_cond)
+                  
+HR_L_cond <- lmer(HR_L ~ Condition+ (1|Group), d)
+summary(HR_L_cond)
+difflsmeans(HR_L_cond)
+
+HR_RR_condtype<- lmer(HR_RR ~ Condition+Type+ (1|Group), d)
+summary(HR_RR_condtype)
+difflsmeans(HR_RR_condtype)
+
+Resp_RR_cond<- lmer(Resp_RR ~ Condition+ (1|Group), d)
+summary(Resp_RR_cond)
+difflsmeans(Resp_RR_cond)
+
+Resp_L_cond <- lmer(Resp_L ~ Condition+ (1|Group), d)
+summary(Resp_L_cond)
+difflsmeans(Resp_L_cond)
 
 
 ```
